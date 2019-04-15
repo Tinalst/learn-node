@@ -1,7 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const Articles = require('./db').Articles;
+const readability = require('node-readability');
 
 const app = express();
+
 // const port = process.env.PORT || 3000;
 app.set('port', process.env.PORT || 3000);
 
@@ -18,34 +21,46 @@ app.use(bodyParser.json());
 //========= 添加路由处理器
 // 获取所有文章
 app.get('/articles', (req, res, next) => {
-     res.send(articles);
+    Articles.all((err, articles) => {
+        if(err) return next(err);
+        res.send(articles);
+    });
 });
 
 // 添加文章
 app.post('/articles', (req, res, next) => {
     console.log('req.body', req.body);
-    articles.push({
-        title: req.body.title
-    });
-    res.send(articles);
+    // 把网页转换成简化版的阅读视图
+    readability('http://www.manning.com/cantelon2', (err, result) => {
+        console.log(err);
+        if (err) return next(err);
+        Articles.create(result, (err, articles) => {
+            res.send(`${result.title}添加进数据库成功`);
+        })
+    })
 });
 
 // 获取指定文章
 app.get('/articles/:id', (req,res, next) => {
     const id = req.params.id;
-    console.log('fetching:', id);
-    res.send(articles[id]);
+    Articles.find(id, (err, article)=> {
+       if(err) return next(err);
+       res.send(article);
+    });
 });
 
 // 删除指定文章
 app.delete('/articles/:id', (req, res, next) => {
     const id = req.params.id;
-    console.log('deleting :', id);
-    delete articles[id];
-    res.send('delete succ');
+    Articles.delet(id, (err, result) => {
+        if(err) return next(err);
+        res.send({msg: 'oks'});
+    });
 });
 
 
 app.listen(app.get('port'), _ => {
     console.log(`app started on port: ${app.get('port')}`);
 });
+
+module.exports = app;
