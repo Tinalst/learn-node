@@ -23,15 +23,23 @@ app.use(bodyParser.json());
 app.get('/articles', (req, res, next) => {
     Articles.all((err, articles) => {
         if(err) return next(err);
-        res.send(articles);
+        res.format({
+            html: _ => {
+                res.render('articles.ejs', {articles: articles})
+            },
+            json: _ => {
+                res.send(articles)
+            }
+        })
     });
 });
 
 // 添加文章
 app.post('/articles', (req, res, next) => {
-    console.log('req.body', req.body);
+    console.log('req.body.url', req.body.url); // 请求参数
+    const url = req.body.url;
     // 把网页转换成简化版的阅读视图
-    readability('http://www.manning.com/cantelon2', (err, result) => {
+    readability(url, (err, result) => {
         console.log(err);
         if (err) return next(err);
         Articles.create(result, (err, articles) => {
