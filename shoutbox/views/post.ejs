@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title%></title>
+  </head>
+  <body>
+    <h1><%= title%></h1>
+    <p>fill in the form below to add a new post.</p>
+    <form action="/post" method="post">
+      <p>
+        <input type="text" name="entry[title]" placeholder="Title" />
+      </p>
+      <p>
+        <textarea name="entry[title]" placeholder="body"></textarea>
+      </p>
+      <input type="submit" value="post" />
+    </form>
+  </body>
+</html>
