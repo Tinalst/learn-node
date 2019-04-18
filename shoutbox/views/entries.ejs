@@ -1,0 +1,15 @@
+<!DOCTYPE>
+<html>
+  <head>
+    <title><%= title%></title>
+  </head>
+  <body>
+    <% entries.forEach(entry  => { %>
+      <div>
+        <h3><%= entry.title %></h3>
+        <p><%= entry.body %></p>
+        <p>posted by <%= entry.username %></p>
+      </div>
+    <%})%>
+  </body>
+</html>

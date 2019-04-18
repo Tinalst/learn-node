@@ -8,6 +8,7 @@ class Entry {
         }
     }
 
+    // 保存数据到数据库中
     save(cb) {
         console.log('this', this);
         const entryJson = JSON.stringify(this);
@@ -17,14 +18,14 @@ class Entry {
         })
     }
 
-
+    // 获取一定范围的数据
     static getRange(from, to, cb){
         db.lrange('entries', from, to, (err, items) => {
             if(err) return cb(err);
             let entries = [];
             items.forEach(item => {
                 entries.push(JSON.parse(item));
-            })
+            });
             cb(null, entries);
         })
     }
